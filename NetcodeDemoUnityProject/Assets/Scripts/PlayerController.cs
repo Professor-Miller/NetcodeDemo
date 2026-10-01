@@ -26,19 +26,20 @@ public class PlayerController : NetworkBehaviour
     // Called when the player is spawned on the network (is a public override because it's virtual in NetworkBehaviour)
     public override void OnNetworkSpawn()
     {
-        // Listen for username changes
         Username.OnValueChanged += OnUsernameChanged;
+
+        // Server initializes the default value
+        if (IsServer && Username.Value.IsEmpty)
+        {
+            Username.Value = new FixedString64Bytes("Noob");
+        }
+
+        // Everyone displays whatever the synchronized value currently is
+        UpdateUsernameText(Username.Value);
 
         if (!IsLocalPlayer) return;
 
         OnPlayerSpawned?.Invoke(NetworkManager.Singleton.LocalClientId);
-
-        if (Username.Value.IsEmpty) return;
-
-        // Apply the CURRENT synchronized value immediately.
-        // This handles players who were already in the game
-        // before this client joined.
-        UpdateUsernameText(Username.Value);
     }
 
     public override void OnNetworkDespawn()
