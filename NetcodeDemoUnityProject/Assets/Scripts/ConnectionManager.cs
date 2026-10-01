@@ -7,7 +7,7 @@ public class ConnectionManager : MonoBehaviour
     // Assigned to the Host button in the UI
     public void Host()
     {
-        // LANConnectServer();
+        LANConnectServer();
         NetworkManager.Singleton.StartHost();
     }
 
@@ -17,8 +17,10 @@ public class ConnectionManager : MonoBehaviour
         NetworkManager.Singleton.StartClient();
     }
 
+    // LAN-only server connection
     private void LANConnectServer()
     {
+        // Set the transport to listen on all available network interfaces
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetConnectionData("0.0.0.0", 7777);
     }
